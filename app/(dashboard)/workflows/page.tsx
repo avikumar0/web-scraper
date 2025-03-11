@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { waitFor } from '@/lib/helper/waitFor'
 import { AlertCircle, InboxIcon, User } from 'lucide-react'
 import React, { Suspense } from 'react'
+import CreateWorkflowDialog from './_components/CreateWorkflowDialog'
 
 function page() {
   return (
@@ -13,6 +14,7 @@ function page() {
           <h1 className="text-3xl font-bold">WorkFlows</h1>
           <p className="text-muted-foreground">Mange your workflows</p>
         </div>
+        <CreateWorkflowDialog  />
       </div>
       <div className="h-full py-6">
         <Suspense fallback={<UserWorkflowsSkeleton />}>
@@ -51,8 +53,8 @@ async function UserWorkflows() {
     )
   }
 
-  if(workflows.length === 0){
-    return(
+  if (workflows.length === 0) {
+    return (
       <div className="flex flex-col gap-4 h-full items-center justify-center ">
         <div className='rounded-full bg-accent w-20 h-20 flex items-center justify-center'>
           <InboxIcon className='stroke-primary' size={40} />
@@ -61,6 +63,7 @@ async function UserWorkflows() {
           <p className="font-bold">No Workflow created yet</p>
           <p className="text-sm text-muted-foreground">Click below button to create your first workflow</p>
         </div>
+        <CreateWorkflowDialog triggerText="Create your first Workflow " />
       </div>
     )
   }
