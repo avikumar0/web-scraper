@@ -5,7 +5,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { createWorkflowSchema, createWorkflowSchemaType } from '@/schema/workflow';
 import { Layers2Icon, Loader2 } from 'lucide-react';
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -24,37 +24,28 @@ import { CreateWorkflow } from '@/actions/workflows/createWorkflow';
 import { toast } from 'sonner';
 
 function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
-    const [mounted, setMounted] = useState(false);
     const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const form = useForm<createWorkflowSchemaType>({
         resolver: zodResolver(createWorkflowSchema),
         defaultValues: {}
     });
 
-    const {mutate, isPending} = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: CreateWorkflow,
         onSuccess: () => {
-            toast.success('Workflow created successfully', {id:"create-workflow"});
+            toast.success('Workflow created successfully', { id: "create-workflow" });
             setOpen(false);
         },
         onError: () => {
-            toast.error('Failed to create workflow', {id:"create-workflow"});
+            toast.error('Failed to create workflow', { id: "create-workflow" });
         }
     });
 
     const onSubmit = useCallback((values: createWorkflowSchemaType) => {
-        toast.loading('Creating workflow...', {id:"create-workflow"});
+        toast.loading('Creating workflow...', { id: "create-workflow" });
         mutate(values);
     }, [mutate]);
-
-    if (!mounted) {
-        return null;
-    }
 
     return (
         <Dialog open={open} onOpenChange={(open) => {
@@ -107,7 +98,7 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
                                         </FormControl>
                                         <FormDescription>
                                             Provide a brief description of your workflow
-                                            <br/> This is optional but can help you to remmeber workflow&apos;s purpose
+                                            <br /> This is optional but can help you to remmeber workflow&apos;s purpose
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -125,4 +116,4 @@ function CreateWorkflowDialog({ triggerText }: { triggerText?: string }) {
     );
 }
 
-export default CreateWorkflowDialog
+export default CreateWorkflowDialog;
