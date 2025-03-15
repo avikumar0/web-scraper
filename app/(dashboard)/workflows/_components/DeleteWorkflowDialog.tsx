@@ -46,7 +46,7 @@ function DeleteWorkflowDialog({ open, setOpen, workflowName,workflowId }: Props)
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Workflow</AlertDialogTitle>
+                    <AlertDialogTitle>Delete Workflow</AlertDialogTitle>    
                 </AlertDialogHeader>
                 <AlertDialogDescription>
                     Are you sure you want to delete this workflow? This action cannot be undone.
