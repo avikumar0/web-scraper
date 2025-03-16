@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { auth } from '@clerk/nextjs/server';
 import React from 'react'
+import Editor from '../../_components/Editor';
 
 async function page({ params }: { params: { workflowId: string } }) {
     const { workflowId } = params;
@@ -22,9 +23,7 @@ async function page({ params }: { params: { workflowId: string } }) {
 
 
     return (
-        <pre className='h-screen'>
-            {JSON.stringify(workflow, null, 2)}
-        </pre>
+        <Editor workflow={workflow}/>
     )
 }
 
