@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest",
-    "bundlesize": "bundlesize"
+    "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.3.2",
@@ -69,26 +67,11 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
-    "eslint": "^8.0.0",
+    "eslint": "^8",
     "eslint-config-next": "14.2.5",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "jest": "latest",
-    "pa11y-ci": "latest",
     "postcss": "^8",
     "prisma": "^6.4.1",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5",
-    "ts-complexity": "latest",
-    "prettier": "latest",
-    "bundlesize": "latest"
-  },
-  "bundlesize": [
-    {
-      "path": ".next/static/chunks/*.js",
-      "maxSize": "200 kB"
-    }
-  ]
+    "typescript": "^5"
+  }
 }
