@@ -4,14 +4,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-# Add permissions block to grant access to issues and pull requests
 permissions:
   pull-requests: write
   issues: write
   contents: read
+  security-events: write # For security scanning
 
 jobs:
-  validate:
+  quality:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,14 +26,70 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    # Basic Checks
     - name: Lint
-      id: lint  # Add ID to reference the step outcome
+      id: lint
       run: npm run lint
       continue-on-error: true
 
     - name: Type check
-      id: type-check  # Add ID to reference the step outcome
+      id: type-check
       run: npx tsc --noEmit
+      continue-on-error: true
+
+    # Code Quality Checks
+    - name: Run ESLint with Prettier
+      id: eslint
+      run: npx eslint . --ext .ts,.tsx --max-warnings 0
+      continue-on-error: true
+
+    - name: Check code complexity
+      id: complexity
+      run: npx ts-complexity --max-complexity 10 '**/*.{ts,tsx}'
+      continue-on-error: true
+
+    # Security Checks
+    - name: Run OWASP Dependency Check
+      id: dependency-check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'web-scraper'
+        path: '.'
+        format: 'HTML'
+        args: >
+          --failOnCVSS 7
+          --enableRetired
+      continue-on-error: true
+
+    # Performance Checks
+    - name: Run Lighthouse CI
+      id: lighthouse
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        urls: |
+          http://localhost:3000
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+      continue-on-error: true
+
+    # Accessibility Checks
+    - name: Run pa11y
+      id: accessibility
+      run: |
+        npm install -g pa11y
+        pa11y-ci
+      continue-on-error: true
+
+    # Bundle Size Check
+    - name: Check bundle size
+      id: bundlesize
+      run: npx bundlesize
+      continue-on-error: true
+
+    # Test Coverage
+    - name: Run tests with coverage
+      id: coverage
+      run: npm run test -- --coverage
       continue-on-error: true
 
     - name: Report Status
@@ -44,16 +100,66 @@ jobs:
           const { owner, repo } = context.repo;
           const pull_number = context.issue.number;
           
-          const lintResult = '${{ steps.lint.outcome }}';
-          const typeCheckResult = '${{ steps.type-check.outcome }}';
+          const results = {
+            lint: '${{ steps.lint.outcome }}',
+            typeCheck: '${{ steps.type-check.outcome }}',
+            eslint: '${{ steps.eslint.outcome }}',
+            complexity: '${{ steps.complexity.outcome }}',
+            security: '${{ steps.dependency-check.outcome }}',
+            lighthouse: '${{ steps.lighthouse.outcome }}',
+            accessibility: '${{ steps.accessibility.outcome }}',
+            bundlesize: '${{ steps.bundlesize.outcome }}',
+            coverage: '${{ steps.coverage.outcome }}'
+          };
           
           let body = '## PR Validation Results\n\n';
-          body += `- Lint: ${lintResult === 'success' ? '✅' : '❌'}\n`;
-          body += `- Type Check: ${typeCheckResult === 'success' ? '✅' : '❌'}\n`;
+          
+          // Basic Checks
+          body += '### Basic Checks\n';
+          body += `- Lint: ${results.lint === 'success' ? '✅' : '❌'}\n`;
+          body += `- Type Check: ${results.typeCheck === 'success' ? '✅' : '❌'}\n\n`;
+          
+          // Code Quality
+          body += '### Code Quality\n';
+          body += `- ESLint/Prettier: ${results.eslint === 'success' ? '✅' : '❌'}\n`;
+          body += `- Code Complexity: ${results.complexity === 'success' ? '✅' : '❌'}\n`;
+          body += `- Test Coverage: ${results.coverage === 'success' ? '✅' : '❌'}\n\n`;
+          
+          // Security
+          body += '### Security\n';
+          body += `- Dependency Check: ${results.security === 'success' ? '✅' : '❌'}\n\n`;
+          
+          // Performance
+          body += '### Performance\n';
+          body += `- Lighthouse Score: ${results.lighthouse === 'success' ? '✅' : '❌'}\n`;
+          body += `- Bundle Size: ${results.bundlesize === 'success' ? '✅' : '❌'}\n\n`;
+          
+          // Accessibility
+          body += '### Accessibility\n';
+          body += `- Pa11y Check: ${results.accessibility === 'success' ? '✅' : '❌'}\n`;
           
           await github.rest.issues.createComment({
             owner,
             repo,
             issue_number: pull_number,
             body
-          }); 
+          });
+
+    # Upload artifacts for detailed reports
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/
+
+    - name: Upload Lighthouse report
+      uses: actions/upload-artifact@v3
+      with:
+        name: lighthouse-report
+        path: .lighthouseci/
+
+    - name: Upload dependency check report
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-check-report
+        path: reports/
