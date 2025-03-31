@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Add permissions block to grant access to issues and pull requests
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -21,10 +27,12 @@ jobs:
       run: npm ci
 
     - name: Lint
+      id: lint  # Add ID to reference the step outcome
       run: npm run lint
       continue-on-error: true
 
     - name: Type check
+      id: type-check  # Add ID to reference the step outcome
       run: npx tsc --noEmit
       continue-on-error: true
 
@@ -33,7 +41,9 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { owner, repo, number } = context.issue;
+          const { owner, repo } = context.repo;
+          const pull_number = context.issue.number;
+          
           const lintResult = '${{ steps.lint.outcome }}';
           const typeCheckResult = '${{ steps.type-check.outcome }}';
           
@@ -44,6 +54,6 @@ jobs:
           await github.rest.issues.createComment({
             owner,
             repo,
-            issue_number: number,
+            issue_number: pull_number,
             body
           }); 
