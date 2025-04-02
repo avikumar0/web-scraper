@@ -4,6 +4,12 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write  # Grant write access to the repository contents
+  pull-requests: write
+  issues: write
+  security-events: write
+
 jobs:
   version:
     runs-on: ubuntu-latest
