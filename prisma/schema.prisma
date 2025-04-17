@@ -41,6 +41,7 @@ model WorkflowExecution {
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
   completedAt DateTime?
+  definition  String    @default("{}")
 
   creditsConsumed Int @default(0)
 
@@ -62,7 +63,23 @@ model ExecutionPhase {
   outputs             String?
   creditsConsumed     Int?
   workflowExecutionId String
-  createdAt           DateTime  @default(now())
 
   execution WorkflowExecution @relation(fields: [workflowExecutionId], references: [id], onDelete: Cascade)
+  log       ExecutionLog[]
 }
+
+model ExecutionLog {
+  id        String   @id @default(cuid())
+  logLevel  String
+  message   String
+  timestamp DateTime @default(now())
+
+  executionFlowId String
+  executionPhase  ExecutionPhase @relation(fields: [executionFlowId], references: [id], onDelete: Cascade)
+}
+
+model UserBalance{
+  userId String @id
+  credits Int @default(0)
+}
+

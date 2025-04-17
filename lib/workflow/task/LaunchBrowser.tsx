@@ -16,11 +16,11 @@ export const LaunchBrowserTask = {
             hideHandle:true,
             required:true,
         },
-    ],
+    ]as const,
     outputs:[
         {
             name: "Web Page",
             type: TaskParamType.BROWSER_INSTANCE,
         },
-    ],
+    ]as const,
 } satisfies WorkflowTask;
