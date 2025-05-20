@@ -16,14 +16,14 @@ function UserAvailableCreditsBadge() {
         refetchInterval: 30 * 1000,
     });
     return (
-        <Link href={"/billing"} className={cn("w-full space-x-2 items-center",buttonVariants({variant:"outline"}))} >
+        <Link href={"/billing"} className={cn("w-full space-x-2 items-center", buttonVariants({ variant: "outline" }))} >
             <CoinsIcon size={20} className="text-primary" />
             <span className="font-semibold">
                 {query.isLoading && (
                     <Loader2Icon className='w-4 h-4 animate-spin' />
                 )}
                 {!query.isLoading && query.data && <ReactCountWrapper value={query.data} />}
-                {!query.isLoading && !query.data && "-"}
+                {!query.isLoading && query.data === undefined && "-"}
             </span>
         </Link>
     )

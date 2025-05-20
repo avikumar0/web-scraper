@@ -16,12 +16,18 @@ model Workflow {
   name        String
   description String?
 
-  definition String
-  status     String
+  definition    String
+  executionPlan String?
+  creditsCost   Int     @default(0)
+
+  cron String?
+
+  status String
 
   lastRunAt     DateTime?
   lastRunId     String?
   lastRunStatus String?
+  nextRunAt     DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -78,8 +84,29 @@ model ExecutionLog {
   executionPhase  ExecutionPhase @relation(fields: [executionFlowId], references: [id], onDelete: Cascade)
 }
 
-model UserBalance{
-  userId String @id
-  credits Int @default(0)
+model UserBalance {
+  userId  String @id
+  credits Int    @default(0)
 }
 
+model Credential {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+  value  String
+
+  createdAt DateTime @default(now())
+
+  //User cannot have two credentials with the same name
+  @@unique([userId, name])
+}
+
+model UserPurchase {
+  id        String   @id @default(cuid())
+  userId    String
+  stripeId  String
+  description String
+  amount   Int
+  currency  String
+  date      DateTime @default(now())
+}
