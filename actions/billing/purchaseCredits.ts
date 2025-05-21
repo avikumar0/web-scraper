@@ -33,6 +33,9 @@ export async function PurchaseCredits(packId:PackId){
                 price: selectedPack.priceId,
             },
         ],
+        invoice_creation: {
+            enabled: true
+        },
     });
 
     if(!session.url) {

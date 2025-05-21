@@ -17,7 +17,6 @@ export async function GET(req: Request) {
         },
     });
 
-    console.log("@@Workflows to run", workflows);
     for (const workflow of workflows) {
         triggerWorkflow(workflow.id);
     }
@@ -28,14 +27,13 @@ export async function GET(req: Request) {
 function triggerWorkflow(workflowId: string) {
 
     const triggerApiUrl = getAppUrl(`api/workflows/execute?workflowId=${workflowId}`);
-    console.log("@@Triggering URL:", triggerApiUrl);
     fetch(triggerApiUrl, {
         headers: {
             Authorization: `Bearer ${process.env.API_SECRET}`,
         },
         cache: "no-store",
         
-    }).catch((error) => console.log("Error triggering workflow with ID:", workflowId, "Error:", error.message));
+    }).catch((error) => console.error("Error triggering workflow with ID:", workflowId, "Error:", error.message));
 
 
 }
