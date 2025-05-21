@@ -17,6 +17,10 @@ interface Props{
 }
 
 function TooltipWrapper(props: Props) {
+  if(!props.content){
+    return <>{props.children}</>
+  }
+  
   return (
     <TooltipProvider>
         <Tooltip>

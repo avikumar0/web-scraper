@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button, buttonVariants } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import UserAvailableCreditsBadge from './UserAvailableCreditsBadge';
 
 const routes = [
     {
@@ -40,11 +41,11 @@ function DesktopSidebar() {
             <div className='flex items-center justify-center gap-2 border-b-[1px] border-separate p-4'>
                 <Logo />
             </div>
-            <div className='p-2'>TODO Credits</div>
+            <div className='p-2'><UserAvailableCreditsBadge /></div>
             <div className='flex flex-col gap-2 p-2'>
                 {routes.map((route) => (
                     <Link key={route.href}
-                        href={route.href}
+                        href={`/${route.href}`}
                         className={buttonVariants({
                             variant: activeroute.href === route.href ? "sidebarItemActive" : "sidebarItem"
                         })}
@@ -74,14 +75,15 @@ export function MobileSidebar() {
                     </SheetTrigger>
                     <SheetContent className='w-[400px] sm:w-[540px] space-y-4' side={"left"} >
                         <Logo />
+                        <UserAvailableCreditsBadge />
                         <div className="flex flex-col gap-1">
                             {routes.map((route) => (
                                 <Link key={route.href}
-                                    href={route.href}
+                                    href={`/${route.href}`}
                                     className={buttonVariants({
                                         variant: activeroute.href === route.href ? "sidebarItemActive" : "sidebarItem"
                                     })}
-                                    onClick={() => setOpen((prev)=> !prev) }
+                                    onClick={() => setOpen((prev) => !prev)}
                                 >
                                     <route.icon size={20} />
                                     {route.label}
