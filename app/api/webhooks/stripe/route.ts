@@ -13,7 +13,7 @@ export async function POST(request:Request){
             signature,
             process.env.STRIPE_WEBHOOK_SECRET!
         );
-        console.log("@@EVENT TYPE", event.type);
+
         switch(event.type) {
             case "checkout.session.completed":
                 HandleCheckoutSessionCompleted(event.data.object);

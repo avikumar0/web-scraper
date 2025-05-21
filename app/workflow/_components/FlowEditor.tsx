@@ -93,7 +93,6 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
       return false;
     }
 
-    console.log("@DEBUG", { input, output });
 
     //Prevent loop
     const hasCycle = (node: AppNode, visited = new Set()) => {

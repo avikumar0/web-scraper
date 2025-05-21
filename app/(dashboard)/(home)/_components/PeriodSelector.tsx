@@ -35,7 +35,6 @@ export default function PeriodSelector({ periods, selectedPeriod }: { periods: P
       value={`${selectedPeriod.month}-${selectedPeriod.year}`}
       onValueChange={(value => {
         const [month, year] = value.split("-");
-        console.log(month, year);
         const params = new URLSearchParams(searchParams);
         params.set("month", month);
         params.set("year", year);
