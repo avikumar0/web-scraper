@@ -39,6 +39,7 @@ export async function PurchaseCredits(packId:PackId){
     });
 
     if(!session.url) {
+        console.log("Something went wrong with session url");
         throw new Error("Unable to create checkout session");
     }
 
