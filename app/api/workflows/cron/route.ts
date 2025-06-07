@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'; // Ensures the route is always dynamic and excluded from static generation
+
 import { getAppUrl } from "@/lib/helper/appUrl";
 import prisma from "@/lib/prisma";
 import { WorkflowStatus } from "@/types/workflow";
